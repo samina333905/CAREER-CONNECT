@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Seeker Dashboard | CareerConnect</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --accent-color: #3b82f6;
+            --background-color: #f8fafc;
+            --text-color: #1f2937;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+
+        .dashboard-container {
+            padding: 2rem 0;
+        }
+
+        .profile-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 1.5rem;
+        }
+
+        .stats-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 1rem;
+        }
+
+        .stats-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .application-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .application-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-weight: 500;
+        }
+
+        .status-pending {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-accepted {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+
+        .status-rejected {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">CareerConnect</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="jobs.html">Find Jobs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="jobseeker-dashboard.html">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="profile.html">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="logoutBtn">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard Content -->
+    <div class="dashboard-container">
+        <div class="container">
+            <!-- Profile Overview -->
+            <div class="profile-card">
+                <div class="profile-header">
+                    <img src="https://via.placeholder.com/100" alt="Profile Picture" class="profile-avatar">
+                    <div>
+                        <h2 id="userName">John Doe</h2>
+                        <p class="text-muted" id="userTitle">Software Engineer</p>
+                        <p class="text-muted" id="userLocation">New York, USA</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="stats-card">
+                            <h3 class="stats-number" id="totalApplications">0</h3>
+                            <p class="text-muted">Total Applications</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stats-card">
+                            <h3 class="stats-number" id="interviews">0</h3>
+                            <p class="text-muted">Interviews</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stats-card">
+                            <h3 class="stats-number" id="offers">0</h3>
+                            <p class="text-muted">Job Offers</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Applications -->
+            <h3 class="mb-4">Recent Applications</h3>
+            <div id="applicationsList">
+                <!-- Applications will be dynamically loaded here -->
+            </div>
+
+            <!-- Recommended Jobs -->
+            <h3 class="mb-4 mt-5">Recommended Jobs</h3>
+            <div id="recommendedJobs">
+                <!-- Recommended jobs will be dynamically loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Function to load user data
+        async function loadUserData() {
+            try {
+                const response = await fetch('/api/user/profile', {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+                const data = await response.json();
+                
+                document.getElementById('userName').textContent = data.name;
+                document.getElementById('userTitle').textContent = data.title;
+                document.getElementById('userLocation').textContent = data.location;
+            } catch (error) {
+                console.error('Error loading user data:', error);
+            }
+        }
+
+        // Function to load applications
+        async function loadApplications() {
+            try {
+                const response = await fetch('/api/applications', {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+                const applications = await response.json();
+                
+                const applicationsList = document.getElementById('applicationsList');
+                applicationsList.innerHTML = applications.map(app => `
+                    <div class="application-card">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h4>${app.jobTitle}</h4>
+                                <p class="text-muted">${app.companyName}</p>
+                            </div>
+                            <span class="status-badge status-${app.status.toLowerCase()}">${app.status}</span>
+                        </div>
+                        <p class="mt-2">Applied on: ${new Date(app.appliedDate).toLocaleDateString()}</p>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading applications:', error);
+            }
+        }
+
+        // Function to load recommended jobs
+        async function loadRecommendedJobs() {
+            try {
+                const response = await fetch('/api/jobs/recommended', {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+                const jobs = await response.json();
+                
+                const recommendedJobs = document.getElementById('recommendedJobs');
+                recommendedJobs.innerHTML = jobs.map(job => `
+                    <div class="application-card">
+                        <h4>${job.title}</h4>
+                        <p class="text-muted">${job.company}</p>
+                        <p>${job.location}</p>
+                        <button class="btn btn-primary" onclick="applyForJob('${job.id}')">Apply Now</button>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading recommended jobs:', error);
+            }
+        }
+
+        // Function to handle logout
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            localStorage.removeItem('token');
+            window.location.href = 'index.html';
+        });
+
+        // Load all data when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!localStorage.getItem('token')) {
+                window.location.href = 'login.html';
+                return;
+            }
+            loadUserData();
+            loadApplications();
+            loadRecommendedJobs();
+        });
+    </script>
+</body>
+</html> 

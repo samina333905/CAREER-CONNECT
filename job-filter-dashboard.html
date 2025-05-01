@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Filter Dashboard - Career Connect</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --premium-color: #f1c40f;
+            --success-color: #2ecc71;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-color);
+        }
+
+        .dashboard-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+        }
+
+        .filter-section {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .filter-title {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-label {
+            font-weight: 500;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .range-slider {
+            width: 100%;
+            height: 5px;
+            background: #ddd;
+            border-radius: 5px;
+            position: relative;
+            margin: 1rem 0;
+        }
+
+        .range-slider .range-selected {
+            height: 100%;
+            background: var(--secondary-color);
+            border-radius: 5px;
+            position: absolute;
+        }
+
+        .range-input {
+            position: relative;
+        }
+
+        .range-input input {
+            position: absolute;
+            width: 100%;
+            height: 5px;
+            top: -7px;
+            background: none;
+            pointer-events: none;
+            -webkit-appearance: none;
+        }
+
+        .range-input input::-webkit-slider-thumb {
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: var(--secondary-color);
+            pointer-events: auto;
+            -webkit-appearance: none;
+            cursor: pointer;
+        }
+        .btn{
+            color:white;
+        }
+
+        .range-value {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+        }
+
+        .range-value span {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .job-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+        }
+
+        .job-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .job-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .company-name {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .job-details {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .home-link{
+            color:white;
+            text-decoration: none;
+            font-size: 20px;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #666;
+        }
+
+        .job-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .job-tag {
+            background: rgba(52, 152, 219, 0.1);
+            color: var(--secondary-color);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .apply-btn {
+            background: var(--secondary-color);
+            color:white;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 5px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .apply-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .results-count {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+
+        .no-results i {
+            font-size: 3rem;
+            color: #ddd;
+            margin-bottom: 1rem;
+        }
+        .admin{
+            background-color:#2980b9;
+            color:white;
+            width:100%;
+            height:50px;
+            border-radius:5px;
+            font-size:20px;
+            border:none;
+            }
+        .admin:hover {
+            background:gray
+        }
+
+    </style>
+</head>
+<body>
+
+
+    <header class="dashboard-header">
+        <div class="container">
+            <a href="index.html" class="home-link">
+                Back to home
+                <a class="nav-link" href="index.html"></a>
+            </a>
+            <h1 class="display-4 mb-3">Job Filter Dashboard</h1>
+            <p class="lead mb-0">Find your perfect job match</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="filter-section">
+                    <h3 class="filter-title">
+                        <i class="fas fa-filter"></i>
+                        Filter Jobs
+                    </h3>
+
+                    <div class="filter-group">
+                        <label class="filter-label">Experience Level</label>
+                        <div class="range-slider">
+                            <div class="range-selected" style="width: 100%;"></div>
+                        </div>
+                        <div class="range-input">
+                            <input type="range" class="min" min="0" max="20" value="0" step="1">
+                            <input type="range" class="max" min="0" max="20" value="20" step="1">
+                        </div>
+                        <div class="range-value">
+                            <span>0 years</span>
+                            <span>20+ years</span>
+                        </div>
+                    </div>
+
+                    <div class="filter-group">
+                        <label class="filter-label">Salary Range</label>
+                        <div class="range-slider">
+                            <div class="range-selected" style="width: 100%;"></div>
+                        </div>
+                        <div class="range-input">
+                            <input type="range" class="min" min="0" max="200000" value="0" step="10000">
+                            <input type="range" class="max" min="0" max="200000" value="200000" step="10000">
+                        </div>
+                        <div class="range-value">
+                            <span>0</span>
+                            <span>200,000+</span>
+                        </div>
+                    </div>
+
+                    <div class="filter-group">
+                        <label class="filter-label">Job Type</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="fulltime" id="fulltime" checked>
+                            <label class="form-check-label" for="fulltime">Full-time</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="parttime" id="parttime" checked>
+                            <label class="form-check-label" for="parttime">Part-time</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="contract" id="contract" checked>
+                            <label class="form-check-label" for="contract">Contract</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="remote" id="remote" checked>
+                            <label class="form-check-label" for="remote">Remote</label>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary w-100 mt-3" id="applyFilters">
+                        Apply Filters
+                    </button>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <div class="results-count">
+                    Showing <span id="resultsCount">2</span> jobs
+                </div>
+
+                <div id="jobResults">
+                    <!-- Sample Job Cards -->
+                    <div class="job-card">
+                        <h3 class="job-title">Senior Software Engineer</h3>
+                        <p class="company-name">Tech Solutions Inc.</p>
+                        <div class="job-details">
+                            <div class="detail-item">
+                                <i class="fas fa-briefcase"></i>
+                                <span>5-8 years</span>
+                            </div>
+                            <div class="detail-item">
+            
+                                <span>120,000 - 150,000</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>San Francisco, CA</span>
+                            </div>
+                        </div>
+                        <div class="job-tags">
+                            <span class="job-tag">Full-time</span>
+                            <span class="job-tag">Remote</span>
+                            <span class="job-tag">React</span>
+                            <span class="job-tag">Node.js</span>
+                        </div>
+                        <button class="apply-btn"><a href="login.html" class="btn">Apply Now</a></button>
+                    </div>
+
+                    <div class="job-card">
+                        <h3 class="job-title">Data Scientist</h3>
+                        <p class="company-name">Data Analytics Co.</p>
+                        <div class="job-details">
+                            <div class="detail-item">
+                                <i class="fas fa-briefcase"></i>
+                                <span>3-5 years</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-dollar-sign"></i>
+                                <span>90,000 - 120,000</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>New York, NY</span>
+                            </div>
+                        </div>
+                        <div class="job-tags">
+                            <span class="job-tag">Full-time</span>
+                            <span class="job-tag">Python</span>
+                            <span class="job-tag">Machine Learning</span>
+                        </div>
+                        <button class="apply-btn"><a href="login.html" class="btn">Apply Now</a></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const rangeInputs = document.querySelectorAll('.range-input input');
+            const rangeSelected = document.querySelectorAll('.range-selected');
+            const jobResults = document.getElementById('jobResults');
+            const resultsCount = document.getElementById('resultsCount');
+            const applyFiltersBtn = document.getElementById('applyFilters');
+
+            // Initialize range sliders
+            rangeInputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    const min = parseInt(input.parentElement.querySelector('.min').value);
+                    const max = parseInt(input.parentElement.querySelector('.max').value);
+                    const rangeSelected = input.parentElement.previousElementSibling;
+                    
+                    if (max - min < 0) {
+                        if (input.className === 'min') {
+                            input.value = max;
+                        } else {
+                            input.value = min;
+                        }
+                    } else {
+                        rangeSelected.style.left = (min / input.max) * 100 + '%';
+                        rangeSelected.style.right = 100 - (max / input.max) * 100 + '%';
+                    }
+                });
+            });
+
+            // Apply filters
+            applyFiltersBtn.addEventListener('click', function() {
+                const experienceMin = parseInt(document.querySelector('.filter-group:nth-child(1) .min').value);
+                const experienceMax = parseInt(document.querySelector('.filter-group:nth-child(1) .max').value);
+                const salaryMin = parseInt(document.querySelector('.filter-group:nth-child(2) .min').value);
+                const salaryMax = parseInt(document.querySelector('.filter-group:nth-child(2) .max').value);
+                
+                const jobTypes = Array.from(document.querySelectorAll('.form-check-input:checked')).map(cb => cb.value);
+                
+                // Filter jobs based on criteria
+                const jobCards = document.querySelectorAll('.job-card');
+                let visibleCount = 0;
+
+                jobCards.forEach(card => {
+                    const experience = parseInt(card.querySelector('.detail-item:nth-child(1) span').textContent);
+                    const salary = parseInt(card.querySelector('.detail-item:nth-child(2) span').textContent.replace(/[^0-9]/g, ''));
+                    const jobType = card.querySelector('.job-tag').textContent.toLowerCase();
+
+                    const matchesExperience = experience >= experienceMin && experience <= experienceMax;
+                    const matchesSalary = salary >= salaryMin && salary <= salaryMax;
+                    const matchesJobType = jobTypes.includes(jobType);
+
+                    if (matchesExperience && matchesSalary && matchesJobType) {
+                        card.style.display = 'block';
+                        visibleCount++;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+
+                resultsCount.textContent = visibleCount;
+
+                if (visibleCount === 0) {
+                    jobResults.innerHTML = `
+                        <div class="no-results">
+                            <i class="fas fa-search"></i>
+                            <h3>No jobs found</h3>
+                            <p>Try adjusting your filters</p>
+                        </div>
+                    `;
+                }
+            });
+
+            // Initialize with default filters
+            applyFiltersBtn.click();
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employer Dashboard | CareerConnect</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --accent-color: #3b82f6;
+            --background-color: #f8fafc;
+            --text-color: #1f2937;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+
+        .dashboard-container {
+            padding: 2rem 0;
+        }
+
+        .stats-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 1rem;
+        }
+
+        .stats-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .candidate-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .candidate-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .job-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 1rem;
+        }
+
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-weight: 500;
+        }
+
+        .status-new {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-review {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-interview {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+
+        .status-rejected {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">CareerConnect</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link active" href="employer-dashboard.html">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="logoutBtn">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard Content -->
+    <div class="dashboard-container">
+        <div class="container">
+            <!-- Company Overview -->
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="stats-card">
+                        <h3 class="stats-number" id="totalJobs">0</h3>
+                        <p class="text-muted">Active Jobs</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stats-card">
+                        <h3 class="stats-number" id="totalApplications">0</h3>
+                        <p class="text-muted">Total Applications</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stats-card">
+                        <h3 class="stats-number" id="interviews">0</h3>
+                        <p class="text-muted">Interviews Scheduled</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Jobs -->
+            <div class="row mb-4">
+                <div class="col-12 d-flex justify-content-between align-items-center">
+                    <h3>Active Jobs</h3>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#postJobModal">
+                        Post New Job
+                    </button>
+                </div>
+                <div class="col-12" id="activeJobs">
+                    <!-- Active jobs will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Recent Applications -->
+            <h3 class="mb-4">Recent Applications</h3>
+            <div id="applicationsList">
+                <!-- Applications will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Post Job Modal -->
+    <div class="modal fade" id="postJobModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Post New Job</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="postJobForm">
+                        <div class="mb-3">
+                            <label class="form-label">Job Title</label>
+                            <input type="text" class="form-control" name="title" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Job Description</label>
+                            <textarea class="form-control" name="description" rows="4" required></textarea>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Location</label>
+                                <input type="text" class="form-control" name="location" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Job Type</label>
+                                <select class="form-select" name="jobType" required>
+                                    <option value="Full-time">Full-time</option>
+                                    <option value="Part-time">Part-time</option>
+                                    <option value="Contract">Contract</option>
+                                    <option value="Internship">Internship</option>
+                                    <option value="Remote">Remote</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Required Skills</label>
+                            <input type="text" class="form-control" name="skills" placeholder="Comma separated skills" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Salary Range</label>
+                            <input type="text" class="form-control" name="salary" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="postJob()">Post Job</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Function to load employer data
+        async function loadEmployerData() {
+            try {
+                const response = await fetch('/api/employer/profile', {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+                const data = await response.json();
+                
+                document.getElementById('totalJobs').textContent = data.totalJobs;
+                document.getElementById('totalApplications').textContent = data.totalApplications;
+                document.getElementById('interviews').textContent = data.interviews;
+            } catch (error) {
+                console.error('Error loading employer data:', error);
+            }
+        }
+
+        // Function to load active jobs
+        async function loadActiveJobs() {
+            try {
+                const response = await fetch('/api/employer/jobs', {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+                const jobs = await response.json();
+                
+                const activeJobs = document.getElementById('activeJobs');
+                activeJobs.innerHTML = jobs.map(job => `
+                    <div class="job-card">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h4>${job.title}</h4>
+                                <p class="text-muted">${job.location}</p>
+                            </div>
+                            <div>
+                                <span class="badge bg-primary">${job.applications} Applications</span>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <button class="btn btn-outline-primary" onclick="viewApplications('${job._id}')">
+                                View Applications
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading active jobs:', error);
+            }
+        }
+
+        // Function to load recent applications
+        async function loadApplications() {
+            try {
+                const response = await fetch('/api/employer/applications', {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+                const applications = await response.json();
+                
+                const applicationsList = document.getElementById('applicationsList');
+                applicationsList.innerHTML = applications.map(app => `
+                    <div class="candidate-card">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h4>${app.candidateName}</h4>
+                                <p class="text-muted">${app.jobTitle}</p>
+                            </div>
+                            <span class="status-badge status-${app.status.toLowerCase()}">${app.status}</span>
+                        </div>
+                        <div class="mt-3">
+                            <button class="btn btn-primary" onclick="viewCandidate('${app._id}')">
+                                View Profile
+                            </button>
+                            <button class="btn btn-outline-primary ms-2" onclick="scheduleInterview('${app._id}')">
+                                Schedule Interview
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading applications:', error);
+            }
+        }
+
+        // Function to post a new job
+        async function postJob() {
+            try {
+                const form = document.getElementById('postJobForm');
+                const formData = new FormData(form);
+                const jobData = Object.fromEntries(formData.entries());
+                jobData.skills = jobData.skills.split(',').map(skill => skill.trim());
+
+                const response = await fetch('/api/employer/jobs', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(jobData)
+                });
+
+                if (response.ok) {
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('postJobModal'));
+                    modal.hide();
+                    form.reset();
+                    loadActiveJobs();
+                }
+            } catch (error) {
+                console.error('Error posting job:', error);
+            }
+        }
+
+        // Function to handle logout
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            localStorage.removeItem('token');
+            window.location.href = 'index.html';
+        });
+
+        // Load all data when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!localStorage.getItem('token')) {
+                window.location.href = 'login.html';
+                return;
+            }
+            loadEmployerData();
+            loadActiveJobs();
+            loadApplications();
+        });
+    </script>
+</body>
+</html> 
